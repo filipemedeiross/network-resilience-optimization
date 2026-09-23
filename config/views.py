@@ -1,19 +1,26 @@
-from django.db import DatabaseError, connection
 from django.http import JsonResponse
+from django.db   import DatabaseError, connection
+
 from django.views.decorators.http import require_GET
 
 
 @require_GET
 def health_live(request):
-    return JsonResponse({"status": "ok"})
+    return JsonResponse({"status" : "ok"})
 
 
 @require_GET
 def health_ready(request):
     try:
         with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
+            cursor.execute ("SELECT 1")
             cursor.fetchone()
     except DatabaseError:
-        return JsonResponse({"status": "not_ready"}, status=503)
-    return JsonResponse({"status": "ready", "database": "ok"})
+        return JsonResponse({"status" : "not_ready"}, status=503)
+
+    return JsonResponse(
+        {
+            "status"   : "ready",
+            "database" : "ok"   ,
+        }
+    )
