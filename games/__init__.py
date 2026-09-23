@@ -1,0 +1,1 @@
+"""Django application for the graph resilience games."""
