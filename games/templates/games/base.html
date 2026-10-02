@@ -1,0 +1,67 @@
+{% load static %}
+
+<!doctype html>
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+
+    <meta name="viewport"     content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light"                              >
+
+    <title>
+      {% block title %}
+        Network Resilience Lab
+      {% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'games/app.css' %}">
+
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+    <a
+      class="skip-link"
+      href ="#main-content"
+    >
+      Ir para o conteúdo
+    </a>
+
+    <header class="site-header">
+      <a
+        class     ="brand"
+        href      ="{% url 'games:scenario-list' %}"
+        aria-label="Network Resilience Lab — início"
+      >
+        <span
+          class      ="brand-mark"
+          aria-hidden="true"
+        >
+          NR
+        </span>
+
+        <span>
+          <strong>Network Resilience       </strong>
+          <small >Laboratório de otimização</small >
+        </span>
+      </a>
+    </header>
+
+    <main id="main-content" class="site-main">
+      {% block content %}
+      {% endblock      %}
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Experimentos interativos de resiliência em redes.
+      </p>
+    </footer>
+
+    <script src="{% static 'games/instance-forms.js' %}" defer></script>
+
+    {% block scripts %}
+    {% endblock      %}
+  </body>
+</html>
