@@ -1,0 +1,112 @@
+{% extends "games/base.html" %}
+
+{% block content %}
+  <section
+    class          ="hero"
+    aria-labelledby="page-title"
+  >
+    <p  class="eyebrow"   >Jogos de otimização em redes         </p >
+    <h1 id   ="page-title">Encontre a intervenção mais eficiente</h1>
+
+    <p  class="hero-copy" >
+      A cada início, uma nova rede é gerada. Se ela ainda não estiver no
+      cache, o serviço MIP calcula e verifica sua solução antes da partida.
+    </p>
+  </section>
+
+  {% if scenarios %}
+    <section
+      class     ="scenario-grid"
+      aria-label="Cenários disponíveis"
+    >
+      {% for scenario in scenarios %}
+        <article
+          class="scenario-card scenario-card--{{ scenario.kind }}"
+        >
+          <div
+            class      ="scenario-card__art"
+            aria-hidden="true"
+          >
+            {% if scenario.kind == "water" %}
+              <span class="art-node art-node--source"     ></span>
+              <span class="art-link"                      ></span>
+              <span class="art-node art-node--destination"></span>
+            {% else %}
+              <span class="art-node art-node--headquarters"></span>
+              <span class="art-link"                       ></span>
+              <span class="art-node art-node--unit"        ></span>
+            {% endif %}
+          </div>
+
+          <div class="scenario-card__body">
+            <span class="kind-badge">
+              {% if scenario.kind == "water" %}
+                Rede de água
+              {% else %}
+                Rede militar
+              {% endif %}
+            </span>
+
+            <h2>
+              {{ scenario.title }}
+            </h2>
+
+            {% if scenario.kind == "water" %}
+              <p>Remova tubulações para separar a origem do destino usando o menor corte possível.   </p>
+            {% else %}
+              <p>Use o limite de ataque para interromper o abastecimento do maior número de unidades.</p>
+            {% endif %}
+
+            <dl class="scenario-meta">
+              <div>
+                <dt>Geração    </dt>
+                <dd>Sob demanda</dd>
+              </div>
+
+              <div>
+                <dt>Em cache                            </dt>
+                <dd>{{ scenario.cached_instance_count }}</dd>
+              </div>
+
+              {% if scenario.default_budget != None %}
+                <div>
+                  <dt>Orçamento                    </dt>
+                  <dd>{{ scenario.default_budget }}</dd>
+                </div>
+              {% endif %}
+            </dl>
+
+            <form
+              class ="instance-generation-form"
+              method="post"
+              action="{% url 'games:start-play' scenario.slug %}"
+            >
+              {% csrf_token %}
+
+              <button
+                class          ="button button--primary button--wide"
+                type           ="submit"
+                data-busy-label="Gerando e resolvendo…"
+              >
+                Iniciar partida
+              </button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+
+  {% else %}
+    <section class="empty-state">
+      <div
+        class      ="empty-state__icon"
+        aria-hidden="true"
+      >
+        ◇
+      </div>
+
+      <h2>Nenhum tipo de cenário cadastrado                    </h2>
+      <p >Execute <code>python manage.py seed_scenarios</code>.</p >
+    </section>
+  {% endif %}
+{% endblock %}
