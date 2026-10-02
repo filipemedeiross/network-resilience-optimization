@@ -1,0 +1,273 @@
+{% extends "games/base.html" %}
+{% load static %}
+
+{% block title %}
+  {{ scenario.title }} · Network Resilience
+{% endblock %}
+
+{% block content %}
+  <nav
+    class     ="breadcrumb"
+    aria-label="Navegação estrutural"
+  >
+    <a
+      href="{% url 'games:scenario-list' %}"
+    >
+      ← Escolher outro cenário
+    </a>
+  </nav>
+
+  <header class="game-heading">
+    <div>
+      <p class="eyebrow">
+        {% if scenario.kind == "water" %}
+          Rede de água
+        {% else %}
+          Rede militar
+        {% endif %}
+
+        · instância {{ revision.revision }}
+      </p>
+
+      <h1>{{ scenario.title }}</h1>
+
+      <p>
+        {% if scenario.kind == "water" %}
+          Selecione as tubulações removíveis e interrompa o caminho entre origem e destino.
+        {% else %}
+          Selecione unidades dentro do orçamento e maximize a parcela desconectada do quartel-general.
+        {% endif %}
+      </p>
+    </div>
+
+    <div
+      class     ="play-status"
+      aria-label="Estado da partida"
+    >
+      <span class="status-dot" aria-hidden="true"></span>
+
+      <span id="play-status-label">
+        {% if play.status == "completed" %}
+          Objetivo alcançado
+        {% elif play.status == "revealed" %}
+          Solução revelada
+        {% else %}
+          Partida ativa
+        {% endif %}
+      </span>
+    </div>
+  </header>
+
+  <div
+    id                           ="game-app"
+    class                        ="game-layout"
+    data-attempt-url             ="{% url 'games:create-attempt' play.pk %}"
+    data-reveal-url              ="{% url 'games:reveal-solution' play.pk %}"
+    data-play-version            ="{{ play.version }}"
+    data-play-status             ="{{ play.status }}"
+    data-game-kind               ="{{ scenario.kind }}"
+    data-military-cost-one-icon  ="{% static 'games/img/military-cost-1.png' %}"
+    data-military-cost-two-icon  ="{% static 'games/img/military-cost-2.png' %}"
+    data-military-cost-three-icon="{% static 'games/img/military-cost-3.png' %}"
+  >
+    <section
+      class          ="network-panel"
+      aria-labelledby="network-title"
+    >
+      <div class="panel-heading">
+        <div>
+          <p  class="panel-kicker" >Tabuleiro      </p >
+          <h2 id   ="network-title">Rede do cenário</h2>
+        </div>
+
+        <div class="legend" aria-label="Legenda">
+          {% if scenario.kind == "water" %}
+            <span><i class="legend-swatch legend-swatch--source"     ></i>Origem   </span>
+            <span><i class="legend-swatch legend-swatch--destination"></i>Destino  </span>
+            <span><i class="legend-line"                             ></i>Removível</span>
+          {% else %}
+            <span>
+              <i class="legend-swatch legend-swatch--headquarters"></i>Quartel-general
+            </span>
+
+            <span>
+              <img class="legend-cost-icon" src="{% static 'games/img/military-cost-1.png' %}" alt="" aria-hidden="true">
+              Custo 1
+            </span>
+            <span>
+              <img class="legend-cost-icon" src="{% static 'games/img/military-cost-2.png' %}" alt="" aria-hidden="true">
+              Custo 2
+            </span>
+            <span>
+              <img class="legend-cost-icon" src="{% static 'games/img/military-cost-3.png' %}" alt="" aria-hidden="true">
+              Custo 3
+            </span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="network-stage" id="network-stage">
+        <svg
+          id             ="network-graph"
+          class          ="network-graph"
+          viewBox        ="0 0 900 600"
+          role           ="img"
+          aria-labelledby="network-svg-title network-svg-description"
+        >
+          <title id="network-svg-title">
+            {{ scenario.title }}
+          </title>
+
+          <desc  id="network-svg-description">
+            {% if scenario.kind == "water" %}
+              Grafo interativo. Use Tab para percorrer tubulações removíveis e Espaço para selecioná-las.
+            {% else %}
+              Grafo interativo. Ícones distintos identificam unidades de custos 1, 2 e 3.
+              Use Tab para percorrer unidades removíveis e Espaço para selecioná-las.
+            {% endif %}
+          </desc>
+
+          <g id="graph-edges"></g>
+          <g id="graph-nodes"></g>
+
+        </svg>
+
+        <noscript>
+          <p class="noscript-message">Ative JavaScript para interagir com este grafo.</p>
+        </noscript>
+      </div>
+
+      <p class="interaction-hint">
+        <span aria-hidden="true">↖</span>
+
+        {% if scenario.kind == "water" %}
+          Clique nas linhas azuis para selecionar tubulações.
+        {% else %}
+          Clique nos nós para selecionar unidades. O ícone de cada unidade indica seu custo.
+        {% endif %}
+      </p>
+    </section>
+
+    <aside
+      class          ="control-panel"
+      aria-labelledby="strategy-title"
+    >
+      <div class="panel-heading panel-heading--controls">
+        <div>
+          <p  class="panel-kicker"  >Sua jogada</p >
+          <h2 id   ="strategy-title">Estratégia</h2>
+        </div>
+
+        <button
+          id   ="clear-selection"
+          class="button button--quiet"
+          type ="button"
+          disabled
+        >
+          Limpar
+        </button>
+      </div>
+
+      <div class="meter" id="budget-meter">
+        <div class="meter__labels">
+          <span id="meter-label">
+            Itens selecionados
+          </span>
+
+          <strong>
+            <span id="budget-used">
+              0
+            </span>
+
+            <span id="budget-limit"></span>
+          </strong>
+        </div>
+
+        <div
+          class        ="meter__track"
+          id           ="meter-track"
+          role         ="progressbar"
+          aria-valuemin="0"
+          aria-valuenow="0"
+        >
+          <span id="meter-fill"></span>
+        </div>
+      </div>
+
+      <div class="selection-box">
+        <h3>Seleção</h3>
+
+        <p  id="empty-selection" class="muted"                                         >Nenhum item selecionado.</p>
+        <ul id="selection-list"  class="selection-list" aria-label="Itens selecionados"></ul>
+      </div>
+
+      <div
+        id         ="feedback"
+        class      ="feedback"
+        role       ="status"
+        aria-live  ="polite"
+        aria-atomic="true"
+        hidden
+      >
+        <strong id="feedback-title"></strong>
+
+        <p  id="feedback-message"                         ></p >
+        <dl id="feedback-metrics" class="feedback-metrics"></dl>
+      </div>
+
+      <form class="csrf-source" aria-hidden="true">
+        {% csrf_token %}
+      </form>
+
+      <button
+        id   ="submit-attempt"
+        class="button button--primary button--wide"
+        type ="button"
+        disabled
+      >
+        Avaliar estratégia
+      </button>
+
+      <button
+        id   ="reveal-solution"
+        class="button button--secondary button--wide"
+        type ="button"
+      >
+        Mostrar solução ótima
+      </button>
+
+      <p class="control-note">
+        A solução é carregada somente quando você pedir.
+      </p>
+
+      <div class="new-instance-action">
+        <form
+          class ="instance-generation-form"
+          method="post"
+          action="{% url 'games:restart-play' play.pk %}"
+        >
+          {% csrf_token %}
+
+          <button
+            class          ="button button--secondary button--wide"
+            type           ="submit"
+            data-busy-label="Gerando e resolvendo…"
+          >
+            Nova instância
+          </button>
+        </form>
+
+        <p class="control-note">
+          Gera outra rede e resolve apenas se ela ainda não estiver
+          no cache. A partida atual permanece no histórico.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  {{ game_payload|json_script:"game-data" }}
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'games/game.js' %}" defer></script>
+{% endblock %}

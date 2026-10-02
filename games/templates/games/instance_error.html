@@ -1,0 +1,51 @@
+{% extends "games/base.html" %}
+
+{% block title %}
+  Instância indisponível · Network Resilience
+{% endblock %}
+
+{% block content %}
+  <section
+    class          ="empty-state"
+    aria-labelledby="instance-error-title"
+  >
+    <div
+      class      ="empty-state__icon"
+      aria-hidden="true"
+    >
+      ↻
+    </div>
+
+    <h1
+      id="instance-error-title"
+    >
+      A nova instância não ficou pronta
+    </h1>
+    <p>
+      {{ message }}
+    </p>
+
+    <form
+      class ="instance-generation-form"
+      method="post"
+      action="{{ retry_url }}"
+    >
+      {% csrf_token %}
+
+      <button
+        class          ="button button--primary button--wide"
+        type           ="submit"
+        data-busy-label="Gerando e resolvendo…"
+      >
+        Tentar novamente
+      </button>
+    </form>
+
+    <a
+      class="button button--secondary button--wide"
+      href ="{{ back_url }}"
+    >
+      Voltar
+    </a>
+  </section>
+{% endblock %}
