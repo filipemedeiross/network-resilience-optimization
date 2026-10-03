@@ -3,6 +3,7 @@ set -eu
 
 python manage.py migrate --noinput
 python manage.py configure_sqlite
+python manage.py seed_scenarios
 python manage.py collectstatic --noinput
 
 exec "$@"
