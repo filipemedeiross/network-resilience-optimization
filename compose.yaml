@@ -1,0 +1,68 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_PATH: /app/data/db.sqlite3
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DJANGO_DEBUG: "${DJANGO_DEBUG:-false}"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-local-compose-change-me}
+      DJANGO_SECURE_COOKIES: "${DJANGO_SECURE_COOKIES:-false}"
+      INSTANCE_GENERATION_MAX_ATTEMPTS: "${INSTANCE_GENERATION_MAX_ATTEMPTS:-20}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+      SOLVER_CLAIM_TTL_SECONDS: "${SOLVER_CLAIM_TTL_SECONDS:-600}"
+      SOLVER_BUSY_RETRIES: "${SOLVER_BUSY_RETRIES:-6}"
+      SOLVER_CONNECT_TIMEOUT: "${SOLVER_CONNECT_TIMEOUT:-1}"
+      SOLVER_READ_TIMEOUT: "${SOLVER_READ_TIMEOUT:-10}"
+      SOLVER_SERVICE_URL: "${SOLVER_SERVICE_URL:-http://solver:8001}"
+      SOLVER_TIME_LIMIT: "${SOLVER_TIME_LIMIT:-5}"
+    ports:
+      - "${WEB_BIND:-127.0.0.1}:${WEB_PORT:-8000}:8000"
+    volumes:
+      - game_data:/app/data
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+    init: true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready/', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+  solver:
+    build:
+      context: .
+      dockerfile: solver_service/Dockerfile
+    expose:
+      - "8001"
+    environment:
+      SOLVER_MAX_CONCURRENCY: "${SOLVER_MAX_CONCURRENCY:-1}"
+      SOLVER_MAX_EDGES: "${SOLVER_MAX_EDGES:-5000}"
+      SOLVER_MAX_NODES: "${SOLVER_MAX_NODES:-500}"
+      SOLVER_MAX_TIME_SECONDS: "${SOLVER_MAX_TIME_SECONDS:-60}"
+    networks:
+      - backend
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1.0
+
+volumes:
+  game_data:
+
+networks:
+  frontend:
+  backend:
+    internal: true
