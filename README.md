@@ -10,14 +10,9 @@ Consider a simple, connected, undirected graph $G=(V,E)$, where vertices represe
 
 ### Water network: minimum edge cut
 
-**Problem:** remove the fewest pipes needed to eliminate all paths between
-the source $s$ and the destination $t$, without removing protected pipes.
-Each removal has unit weight; in generated scenarios, pipes incident to
-the source or destination are protected.
+**Problem:** remove the fewest pipes needed to eliminate all paths between the source $s$ and the destination $t$, without removing protected pipes. Each removal has unit weight; in generated scenarios, pipes incident to the source or destination are protected.
 
-Let $E_P$ be the set of protected edges. Define $p_v\in\{0,1\}$ as the side
-of the cut containing vertex $v$, and $y_e\in\{0,1\}$ as the decision to
-remove edge $e$. The model is:
+Let $E_P$ be the set of protected edges. Define $p_v\in\{0,1\}$ as the side of the cut containing vertex $v$, and $y_e\in\{0,1\}$ as the decision to remove edge $e$. The model is:
 
 $$
 \begin{aligned}
@@ -38,7 +33,7 @@ The constraints require removing every edge between the two sides of the cut, se
 
 **Problem:** remove units within a budget and maximize the total number of affected units: those removed and those left without a path to headquarters. In generated scenarios, the budget is 6, removal costs are 1, 2, or 3, and headquarters and its neighbors are protected from removal.
 
-Let $h$ be headquarters, $V_P$ the protected vertices, $c_v$ the removal cost of $v$, and $B$ the budget. Define $x_v\in\{0,1\}$ for removed units and $d_v\in\{0,1\}$ for remaining units in the partition separated from headquarters. The model is:
+Let $h$ be headquarters, $V_P$ the protected vertices, $c_v$ the removal cost of $v$ and $B$ the budget. Define $x_v\in\{0,1\}$ for removed units and $d_v\in\{0,1\}$ for remaining units in the partition separated from headquarters. The model is:
 
 $$
 \begin{aligned}
@@ -54,9 +49,7 @@ $$
 \end{aligned}
 $$
 
-A connection between units that have not been removed requires both to be in
-the same partition. At optimality, maximization marks all remaining units without
-a path to $h$ as disconnected; $x_v+d_v\le1$ prevents counting a unit twice.
+A connection between units that have not been removed requires both to be in the same partition. At optimality, maximization marks all remaining units without a path to $h$ as disconnected; $x_v+d_v\le1$ prevents counting a unit twice.
 
 If time remains after proving the optimal impact, the solver fixes that value and minimizes $\sum_{v\in V}(c_v+1/(|V|+1))x_v$, favoring lower costs and fewer removals.
 
