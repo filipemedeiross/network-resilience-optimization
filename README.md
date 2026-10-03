@@ -78,11 +78,6 @@ docker compose up --build -d
 
 Open <http://127.0.0.1:8000>. The container prepares the database, static files and scenario catalog automatically. The solver runs on the internal Compose network.
 
-```bash
-docker compose logs -f web solver  # follow service logs
-docker compose down                # stop, preserving the database
-```
-
 ## Local Development
 
 Use Python 3.12 and install the dependencies:
