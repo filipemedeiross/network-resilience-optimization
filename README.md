@@ -25,10 +25,10 @@ $$
 \text{subject to}\quad
 & p_s=0, \\
 & p_t=1, \\
-& y_{\{u,v\}}\ge p_u-p_v && \forall\\{u,v\}\in E, \\
-& y_{\{u,v\}}\ge p_v-p_u && \forall\\{u,v\}\in E, \\
-& y_e=0 && \forall\e\in E_P, \\
-& p_v\in\{0,1\},\quad y_e\in\{0,1\} && \forall\v\in V,\ e\in E.
+& y_{\{u,v\}}\ge p_u-p_v && \forall\ \{u,v\}\in E, \\
+& y_{\{u,v\}}\ge p_v-p_u && \forall\ \{u,v\}\in E, \\
+& y_e=0 && \forall \e\in E_P, \\
+& p_v\in\{0,1\},\quad y_e\in\{0,1\} && \forall \v\in V,\ e\in E.
 \end{aligned}
 $$
 
