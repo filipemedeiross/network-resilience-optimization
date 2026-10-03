@@ -23,28 +23,22 @@ $$
 \begin{aligned}
 \min\quad & \sum_{e\in E} y_e \\
 \text{subject to}\quad
-& p_s=0,\quad p_t=1, \\
-& y_{\{u,v\}}\ge p_u-p_v && \forall\,\{u,v\}\in E, \\
-& y_{\{u,v\}}\ge p_v-p_u && \forall\,\{u,v\}\in E, \\
-& y_e=0 && \forall\,e\in E_P, \\
-& p_v\in\{0,1\},\quad y_e\in\{0,1\} && \forall\,v\in V,\ e\in E.
+& p_s=0, \\
+& p_t=1, \\
+& y_{\{u,v\}}\ge p_u-p_v && \forall\\{u,v\}\in E, \\
+& y_{\{u,v\}}\ge p_v-p_u && \forall\\{u,v\}\in E, \\
+& y_e=0 && \forall\e\in E_P, \\
+& p_v\in\{0,1\},\quad y_e\in\{0,1\} && \forall\v\in V,\ e\in E.
 \end{aligned}
 $$
 
-The constraints require removing every edge between the two sides of the cut,
-separating the source from the destination.
+The constraints require removing every edge between the two sides of the cut, separating the source from the destination.
 
 ### Military network: vertex interdiction with a budget
 
-**Problem:** remove units within a budget and maximize the total number of
-affected units: those removed and those left without a path to headquarters.
-In generated scenarios, the budget is 6, removal costs are 1, 2, or 3, and
-headquarters and its neighbors are protected from removal.
+**Problem:** remove units within a budget and maximize the total number of affected units: those removed and those left without a path to headquarters. In generated scenarios, the budget is 6, removal costs are 1, 2, or 3, and headquarters and its neighbors are protected from removal.
 
-Let $h$ be headquarters, $V_P$ the protected vertices, $c_v$ the removal cost
-of $v$, and $B$ the budget. Define $x_v\in\{0,1\}$ for removed units and
-$d_v\in\{0,1\}$ for remaining units in the partition separated from headquarters.
-The model is:
+Let $h$ be headquarters, $V_P$ the protected vertices, $c_v$ the removal cost of $v$, and $B$ the budget. Define $x_v\in\{0,1\}$ for removed units and $d_v\in\{0,1\}$ for remaining units in the partition separated from headquarters. The model is:
 
 $$
 \begin{aligned}
@@ -52,11 +46,11 @@ $$
 \text{subject to}\quad
 & \sum_{v\in V}c_vx_v\le B, \\
 & x_h=d_h=0, \\
-& x_v=0 && \forall\,v\in V_P, \\
-& x_v+d_v\le1 && \forall\,v\in V, \\
-& d_u-d_v\le x_u+x_v && \forall\,\{u,v\}\in E, \\
-& d_v-d_u\le x_u+x_v && \forall\,\{u,v\}\in E, \\
-& x_v,d_v\in\{0,1\} && \forall\,v\in V.
+& x_v=0 && \forall\v\in V_P, \\
+& x_v+d_v\le1 && \forall\v\in V, \\
+& d_u-d_v\le x_u+x_v && \forall\\{u,v\}\in E, \\
+& d_v-d_u\le x_u+x_v && \forall\\{u,v\}\in E, \\
+& x_v,d_v\in\{0,1\} && \forall\v\in V.
 \end{aligned}
 $$
 
