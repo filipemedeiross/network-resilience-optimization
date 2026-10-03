@@ -27,7 +27,7 @@ $$
 & p_t=1, \\
 & y_{\{u,v\}}\ge p_u-p_v && \forall\ \{u,v\}\in E, \\
 & y_{\{u,v\}}\ge p_v-p_u && \forall\ \{u,v\}\in E, \\
-& y_e=0 && \forall \e\in E_P, \\
+& y_e=0 && \forall e\in E_P, \\
 & p_v\in\{0,1\},\quad y_e\in\{0,1\} && \forall \v\in V,\ e\in E.
 \end{aligned}
 $$
@@ -46,11 +46,11 @@ $$
 \text{subject to}\quad
 & \sum_{v\in V}c_vx_v\le B, \\
 & x_h=d_h=0, \\
-& x_v=0 && \forall\v\in V_P, \\
-& x_v+d_v\le1 && \forall\v\in V, \\
-& d_u-d_v\le x_u+x_v && \forall\\{u,v\}\in E, \\
-& d_v-d_u\le x_u+x_v && \forall\\{u,v\}\in E, \\
-& x_v,d_v\in\{0,1\} && \forall\v\in V.
+& x_v=0 && \forall \v\in V_P, \\
+& x_v+d_v\le1 && \forall \v\in V, \\
+& d_u-d_v\le x_u+x_v && \forall \\{u,v\}\in E, \\
+& d_v-d_u\le x_u+x_v && \forall \\{u,v\}\in E, \\
+& x_v,d_v\in\{0,1\} && \forall \v\in V.
 \end{aligned}
 $$
 
