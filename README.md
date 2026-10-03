@@ -64,8 +64,7 @@ A connection between units that have not been removed requires both to be in
 the same partition. At optimality, maximization marks all remaining units without
 a path to $h$ as disconnected; $x_v+d_v\le1$ prevents counting a unit twice.
 
-If time remains after proving the optimal impact, the solver fixes that value
-and minimizes $\sum_{v\in V}(c_v+1/(|V|+1))x_v$, favoring lower costs and fewer removals.
+If time remains after proving the optimal impact, the solver fixes that value and minimizes $\sum_{v\in V}(c_v+1/(|V|+1))x_v$, favoring lower costs and fewer removals.
 
 ## Screenshots
 
