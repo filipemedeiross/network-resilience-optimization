@@ -1,0 +1,7 @@
+services:
+  solver:
+    ports:
+      - "127.0.0.1:${SOLVER_PORT:-8001}:8001"
+    networks:
+      - frontend
+      - backend
