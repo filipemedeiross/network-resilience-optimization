@@ -1,17 +1,12 @@
 # NETWORK RESILIENCE OPTIMIZATION
 
-An interactive application for exploring network resilience through two
-optimization problems: cutting water pipes and disrupting military supply networks.
-Choose a scenario, select interventions, and compare your strategy with the optimal solution.
+An interactive application for exploring network resilience through two optimization problems: cutting water pipes and disrupting military supply networks. Choose a scenario, select interventions and compare your strategy with the optimal solution.
 
-Networks are generated on demand. The optimal solution is computed and verified
-before each game, reusing cached results when available; moves are evaluated locally.
-The application uses Django/SQLite and a FastAPI optimization service with Python-MIP/CBC.
+> **Note**: Networks are generated on demand. The optimal solution is computed and verified before each game, reusing cached results when available; moves are evaluated locally. The application uses Django/SQLite and a FastAPI optimization service with Python-MIP/CBC.
 
-## Problems and mathematical formulations
+## Problems and Mathematical Formulations
 
-Consider a simple, connected, undirected graph $G=(V,E)$, where vertices
-represent network nodes and edges represent connections.
+Consider a simple, connected, undirected graph $G=(V,E)$, where vertices represent network nodes and edges represent connections.
 
 ### Water network: minimum edge cut
 
@@ -78,8 +73,7 @@ and minimizes $\sum_{v\in V}(c_v+1/(|V|+1))x_v$, favoring lower costs and fewer 
 | --- | --- | --- |
 | ![Scenario selection page](docs/scenarios.png) | ![Water network board and controls](docs/water-game.png) | ![Military network board and budget](docs/military-game.png) |
 
-Screenshots are stored in [`docs/`](docs/). Each game lets you evaluate strategies,
-reveal the optimal solution, or generate a new instance.
+Screenshots are stored in [`docs/`](docs/). Each game lets you evaluate strategies, reveal the optimal solution or generate a new instance.
 
 ## Running with Docker
 
@@ -96,17 +90,14 @@ Copy the generated secret into `DJANGO_SECRET_KEY` in `.env`, then start:
 docker compose up --build -d
 ```
 
-Open <http://127.0.0.1:8000>. The container prepares the database, static files,
-and scenario catalog automatically. The solver runs on the internal Compose network.
+Open <http://127.0.0.1:8000>. The container prepares the database, static files and scenario catalog automatically. The solver runs on the internal Compose network.
 
 ```bash
 docker compose logs -f web solver  # follow service logs
-docker compose down              # stop, preserving the database
+docker compose down                # stop, preserving the database
 ```
 
-Configuration options are listed in [`.env.example`](.env.example).
-
-## Local development
+## Local Development
 
 Use Python 3.12 and install the dependencies:
 
@@ -139,7 +130,3 @@ To register and solve deterministic instances in advance:
 python manage.py seed_scenarios --instances-per-kind 6
 python manage.py solve_scenarios --time-limit 10
 ```
-
-## License
-
-[MIT](LICENSE).
